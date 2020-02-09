@@ -3,7 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/BruzGus/edcomment/commons"
 	"github.com/BruzGus/edcomment/configuration"
@@ -38,4 +40,56 @@ func CommentCreate(w http.ResponseWriter, r *http.Request) {
 	m.Message = "Comentario creado con exito"
 	commons.DisplayMessage(w, m)
 
+}
+
+// CommentGetAll ..., obtiene todos los Comentarios
+func CommentGetAll(w http.ResponseWriter, r *http.Request) {
+	comments := []models.Comment{}
+	m := models.Message{}
+	user := models.User{}
+	//vote := models.Vote{}
+
+	r.Context().Value(&user)
+	vars := r.URL.Query() //obtenemos despues del signo de interrogacion
+
+	db := configuration.GetConnection()
+	defer db.Close() // siempre cerrar los recursos
+
+	qComment := db.Where("parent_Id=0")
+	if order, ok := vars["order"]; ok {
+		if order[0] == "votes" {
+			qComment = qComment.Order("votes desc, created_at desc")
+		}
+	} else {
+		if idlimit, ok := vars["idlimit"]; ok {
+			registerByPage := 30
+			offset, err := strconv.Atoi(idlimit[0])
+			if err != nil {
+				log.Println("Error:", err)
+			}
+			qComment = qComment.Where("id BETWEEN ? AND ?", offset-registerByPage, offset)
+		}
+
+		qComment = qComment.Order("id desc")
+	}
+
+	qComment.Find(&comments)
+
+	j, err := json.Marshal(comments)
+	if err != nil {
+		m.Code = http.StatusInternalServerError
+		m.Message = "Error al convertir los comentarios en json"
+		commons.DisplayMessage(w, m)
+		return
+	}
+
+	if len(comments) > 0 {
+		w.Header().Set("Context-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(j)
+	} else {
+		m.Code = http.StatusNoContent
+		m.Message = "No se encontraron comentarios"
+		commons.DisplayMessage(w, m)
+	}
 }
