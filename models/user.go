@@ -2,7 +2,7 @@ package models
 
 import "github.com/jinzhu/gorm"
 
-// User ..., Modelo usuario para el formatear la DATA
+// User ..., Modelo usuario para el formatear la DATA, usuario del sistema.
 type User struct {
 	gorm.Model
 	Userame     string    `json:"username" gorm:"not null;unique"`

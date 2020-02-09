@@ -1,6 +1,6 @@
 package models
 
-//Token ...,modelo tipo estructura para el manejo de los token.
+//Token ...,permite embolver el token generado.
 type Token struct {
 	Token string `json:"token"`
 }
