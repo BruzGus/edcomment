@@ -28,10 +28,10 @@ func main() {
 
 	// Inicia el servidor
 	server := &http.Server{
-		Addr:    "8585",
+		Addr:    "127.0.0.1:8585",
 		Handler: n,
 	}
-	log.Println("iniciado el servidor en http://localhost:8585")
+	log.Println("iniciado el servidor en http://localhost:8080")
 	log.Println(server.ListenAndServe())
 	log.Println("Finalizó la ejecución del programa")
 }

@@ -3,7 +3,6 @@ package controllers
 import (
 	"crypto/md5"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -27,7 +26,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	c := sha256.Sum256([]byte(user.Pass))
-	pwd := base64.URLEncoding.EncodeToString(c[:32])
+	//pwd := base64.URLEncoding.EncodeToString(c[:32])
+	pwd := fmt.Sprintf("%x", c)
 
 	db.Where("email= ? and pass = ?", user.Email, pwd).First(&user)
 	if user.ID > 0 {
