@@ -2,10 +2,12 @@ package configuration
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 
-	
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
 )
 
 //Configuration ..., estructura para mapear el archivo de configuracion
@@ -31,4 +33,15 @@ func GetConfiguration() Configuration {
 		log.Fatal(err)
 	}
 	return c
+}
+
+//GetConnection ..., realiza la coneccion a la base de datos
+func GetConnection() *gorm.DB {
+	c := GetConfiguration()
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset= utf8&parseTime=True&loc=Local", c.User, c.Password, c.Server, c.Port, c.Database)
+	db, err := gorm.Open("mysql", dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return db
 }
