@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/BruzGus/SCA/models"
+	"github.com/BruzGus/edcomment/models"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
