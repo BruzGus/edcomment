@@ -22,5 +22,5 @@
 ### Go Patch ###
 /vendor/
 /Godeps/
-/keys/
+/keys/*.rsa
 # End of https://www.gitignore.io/api/go
